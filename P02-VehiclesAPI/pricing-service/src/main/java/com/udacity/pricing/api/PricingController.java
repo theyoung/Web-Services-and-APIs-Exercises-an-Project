@@ -12,6 +12,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Implements a REST-based controller for the pricing service.
+ *
+ * PricingController
+ * This is our actual REST controller for the application.
+ * This implements what a GET request will respond with - in this case,
+ * a randomly generated price gathered from the PricingService.
+ *
+ * Once converted to a microservice, the Controller should not be explicitly necessary.
  */
 @RestController
 @RequestMapping("/services/price")

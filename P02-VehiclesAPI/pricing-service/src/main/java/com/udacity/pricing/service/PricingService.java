@@ -11,6 +11,13 @@ import java.util.stream.LongStream;
 
 /**
  * Implements the pricing service to get prices for each vehicle.
+ *
+ * PricingService
+ * The Pricing Service does most of the legwork of the code.
+ * Here, it creates a mapping of random prices to IDs, as well as the method (in our mock service here)
+ * to generate the random prices.
+ *
+ * Once converted to a microservice, the Service should not be explicitly necessary.
  */
 public class PricingService {
 
