@@ -2,6 +2,10 @@ package com.udacity.boogle.maps;
 
 /**
  * Declares a class to store an address, city, state and zip code.
+ *
+ * This declares the Address class, primarily just made of the private variables address, city, state and zip.
+ *
+ * Note that the latitude and longitude are not stored here - they come from the Vehicles API.
  */
 public class Address {
 

@@ -7,6 +7,11 @@ import java.util.stream.Collectors;
 
 /**
  * Implements a mock repository for generating a random address.
+ *
+ * MockAddressRepository
+ * Repositories normally provide some type of data persistence while the web service runs.
+ * In this case, this Mock is simply choosing a random address from the ADDRESSES array defined in the file.
+ *
  */
 class MockAddressRepository {
 
