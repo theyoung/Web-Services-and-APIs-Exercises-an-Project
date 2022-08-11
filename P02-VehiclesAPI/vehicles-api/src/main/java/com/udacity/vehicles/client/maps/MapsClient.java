@@ -10,6 +10,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * Implements a class to interface with the Maps Client for location data.
+ *
+ * MapsClient
+ * Handles the format of a GET request to the boogle-maps WebClient to get location data.
+ *
  */
 @Component
 public class MapsClient {

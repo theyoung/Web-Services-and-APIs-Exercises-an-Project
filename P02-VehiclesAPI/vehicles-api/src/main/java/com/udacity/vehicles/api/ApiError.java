@@ -5,6 +5,10 @@ import java.util.List;
 
 /**
  * Declares methods to return errors and other messages from the API.
+ *
+ * API Error
+ * Declares a few quick methods to return errors and other messages from the Vehicles API.
+ *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ApiError {

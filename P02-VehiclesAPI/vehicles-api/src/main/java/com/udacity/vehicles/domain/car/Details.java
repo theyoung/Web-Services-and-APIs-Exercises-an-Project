@@ -9,6 +9,11 @@ import javax.validation.constraints.NotNull;
 /**
  * Declares the additional detail variables for each Car object,
  * along with related methods for access and setting.
+ *
+ * Details
+ * Declares additional vehicle details,
+ * primarily about the car build itself,
+ * such as fuelType and mileage.
  */
 @Embeddable
 public class Details {
@@ -18,6 +23,8 @@ public class Details {
 
     @NotBlank
     private String model;
+
+
 
     @NotNull
     @ManyToOne
@@ -36,6 +43,15 @@ public class Details {
     private Integer productionYear;
 
     private String externalColor;
+
+    public Details(){
+
+    }
+    public Details(String body, String model, Manufacturer manufacturer) {
+        this.body = body;
+        this.model = model;
+        this.manufacturer = manufacturer;
+    }
 
     public String getBody() {
         return body;

@@ -13,6 +13,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 /**
  * Implements the Error controller related to any errors handled by the Vehicles API
+ *
+ * ErrorController
+ * This helps to handle any invalid arguments fed to the API.
  */
 @ControllerAdvice
 public class ErrorController extends ResponseEntityExceptionHandler {

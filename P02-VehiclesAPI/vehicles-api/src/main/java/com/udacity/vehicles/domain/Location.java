@@ -9,6 +9,14 @@ import javax.validation.constraints.NotNull;
  * Latitude and longitude must be provided, while other
  * location information must be gathered each time from
  * the maps API.
+ *
+ * Location
+ * This declares information about the location of a vehicle.
+ * This is not the exact same as the Address class used by boogle-maps -
+ * it's primary use is related to the storage of latitude and longitude values.
+ * Because the data, such as address, gathered from boogle-maps is annotated as @Transient,
+ * this data is not stored until the next time boogle-maps is called.
+ *
  */
 @Embeddable
 public class Location {
@@ -43,8 +51,16 @@ public class Location {
         return lat;
     }
 
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
     public Double getLon() {
         return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 
     public String getAddress() {

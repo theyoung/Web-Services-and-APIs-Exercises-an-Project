@@ -26,6 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Implements a REST-based controller for the Vehicles API.
+ *
+ * CarController
+ * This is our actual REST controller for the application.
+ * This implements what happens when GET, POST, PUT and DELETE requests are received (using methods in the CarService),
+ * and how they are responded to (including formatting with CarResourceAssembler).
+ * You will implement these methods in your code.
+ *
  */
 @RestController
 @RequestMapping("/cars")
@@ -63,7 +70,9 @@ class CarController {
          * TODO: Use the `assembler` on that car and return the resulting output.
          *   Update the first line as part of the above implementing.
          */
-        return assembler.toResource(new Car());
+        Car car = carService.findById(id);
+        return assembler.toResource(car);
+//        return assembler.toResource(new Car());
     }
 
     /**

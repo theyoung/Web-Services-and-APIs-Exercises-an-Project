@@ -3,12 +3,23 @@ package com.udacity.vehicles.service;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 /**
  * Implements the car service create, read, update or delete
  * information about vehicles, as well as gather related
  * location and price data when desired.
+ *
+ *CarService
+ * The Car Service does a lot of the legwork of the code.
+ * It can gather either the entire list of vehicles or just a single vehicle by ID (including calls to the maps and pricing web clients).
+ * It can also save updated vehicle information.
+ * Lastly, it can delete an existing car.
+ * All of these are called by the CarController based on queries to the REST API.
+ * You will implement most of these methods yourself.
+ *
  */
 @Service
 public class CarService {
@@ -42,7 +53,12 @@ public class CarService {
          *   If it does not exist, throw a CarNotFoundException
          *   Remove the below code as part of your implementation.
          */
-        Car car = new Car();
+
+        Optional<Car> car = repository.findById(id);
+
+        if(!car.isPresent()){
+            throw new CarNotFoundException(String.format("Car with Id %d Not Found", id));
+        }
 
         /**
          * TODO: Use the Pricing Web client you create in `VehiclesApiApplication`
@@ -63,7 +79,7 @@ public class CarService {
          */
 
 
-        return car;
+        return car.get();
     }
 
     /**

@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 
 /**
  * Represents the price of a given vehicle, including currency.
+ *
+ * Price
+ * Very similar to the Price file for pricing-service, this declares a class for use with the PriceClient.
+ *
  */
 public class Price {
 
