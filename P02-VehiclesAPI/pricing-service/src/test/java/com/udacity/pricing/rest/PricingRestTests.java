@@ -10,20 +10,26 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.hateoas.client.Traverson;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.json.*;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.jayway.jsonpath.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_UTF8;
 
 
 @RunWith(SpringRunner.class)
@@ -57,10 +63,18 @@ public class PricingRestTests {
             priceList.add(cur);
         }
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+        System.out.println("Content Type = " + response.getHeaders().getContentType());
+//        assertThat(response.getHeaders().getContentType(), equalTo(HAL_JSON_UTF8));
         assertThat(priceList.size(), equalTo(1));
         assertThat(priceList.get(0).getCurrency(), equalTo("USD"));
         assertThat(priceList.get(0).getVehicleId(), equalTo(22L));
         assertThat(priceList.get(0).getPrice().toString(), equalTo("20000.0"));
 
     }
+
+//    @Test
+//    public void traversonTest() throws URISyntaxException {
+//        Object obj = WebClient.create("http://localhost:"+ port +"/prices/search/findByVehicleId?vehicleId=22").get().exchange().block();
+//        System.out.println(obj.toString());
+//    }
 }

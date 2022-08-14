@@ -1,3 +1,13 @@
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (1, 'USD', 10000.00,1);
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (2, 'USD', 20000.00,2);
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (3, 'USD', 30000.00,3);
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (4, 'USD', 40000.00,4);
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (5, 'USD', 50000.00,5);
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (6, 'USD', 10000.00,6);
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (7, 'USD', 20000.00,7);
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (8, 'USD', 30000.00,8);
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (9, 'USD', 40000.00,9);
+INSERT INTO Price (id, currency, price, vehicle_id) VALUES (10, 'USD', 50000.00,10);
 INSERT INTO Price (id, currency, price, vehicle_id) VALUES (21, 'USD', 10000.00,21);
 INSERT INTO Price (id, currency, price, vehicle_id) VALUES (22, 'USD', 20000.00,22);
 INSERT INTO Price (id, currency, price, vehicle_id) VALUES (23, 'USD', 30000.00,23);

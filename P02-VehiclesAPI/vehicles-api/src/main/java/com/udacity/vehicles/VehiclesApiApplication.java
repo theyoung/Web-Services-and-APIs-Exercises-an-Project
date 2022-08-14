@@ -1,5 +1,8 @@
 package com.udacity.vehicles;
 
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
+import com.netflix.discovery.shared.Application;
 import com.udacity.vehicles.domain.Condition;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
@@ -7,15 +10,18 @@ import com.udacity.vehicles.domain.car.Details;
 import com.udacity.vehicles.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles.domain.manufacturer.ManufacturerRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Launches a Spring Boot application for the Vehicles API,
@@ -30,8 +36,11 @@ import java.time.LocalDateTime;
  */
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableEurekaClient
 public class VehiclesApiApplication {
 
+    @Autowired(required = false)
+    EurekaClient eurekaClient;
     public static void main(String[] args) {
         SpringApplication.run(VehiclesApiApplication.class, args);
     }
@@ -51,7 +60,7 @@ public class VehiclesApiApplication {
             repository.save(new Manufacturer(103, "BMW"));
             repository.save(new Manufacturer(104, "Dodge"));
 
-//            carRepository.save(new Car(1L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("wood","crow",manufacturer)));
+            carRepository.save(new Car(1L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("wood","crow",manufacturer)));
 //            carRepository.save(new Car(22L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("steel","house",manufacturer)));
         };
     }
@@ -78,6 +87,19 @@ public class VehiclesApiApplication {
      */
     @Bean(name="pricing")
     public WebClient webClientPricing(@Value("${pricing.endpoint}") String endpoint) {
+        if(eurekaClient != null) {
+            try{
+                Application app = eurekaClient.getApplications().getRegisteredApplications("PRICING-SERVICE");
+
+                List<InstanceInfo> list = app.getInstances();
+                if(list.size() > 0){
+                    System.out.println("pricing service found in eureka");
+                    return WebClient.create("http://"+list.get(0).getHostName() + ":" + list.get(0).getPort());
+                }
+            } catch (Exception e){
+                System.out.println("pricing service not found in eureka");
+            }
+        }
         return WebClient.create(endpoint);
     }
 

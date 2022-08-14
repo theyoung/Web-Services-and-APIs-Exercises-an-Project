@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.netflix.discovery.EurekaClient;
+import com.netflix.discovery.shared.Applications;
 import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.client.prices.PriceClient;
 import com.udacity.vehicles.domain.Condition;
@@ -33,6 +35,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,7 +44,7 @@ import org.springframework.test.web.servlet.MockMvc;
  * Implements testing of the CarController class.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(properties = {"eureka.client.enabled=false","eureka.client.register-with-eureka=false"})
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -56,11 +59,17 @@ public class CarControllerTest {
     @Autowired
     private CarService carService;
 
+//    @MockBean
+//    EurekaClient eurekaClient;
+
     /**
      * Creates pre-requisites for testing, such as an example car.
      */
     @Before
     public void setup() throws Exception {
+//        new EurekaClient();
+//        given(eurekaClient.getApplications()).willReturn(null);
+
         Car car = getCar();
         carService.save(car);
     }
@@ -90,7 +99,7 @@ public class CarControllerTest {
     public void putCar() throws Exception {
         Car car = getCar();
         car.setId(1l);
-        car.setCondition(Condition.NEW);
+        car.setCondition(Condition.NEW);// original data is USED
 
         mvc.perform(
                 put(new URI("/cars/1"))

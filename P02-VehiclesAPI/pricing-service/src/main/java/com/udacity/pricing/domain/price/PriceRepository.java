@@ -2,6 +2,7 @@ package com.udacity.pricing.domain.price;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.List;
  */
 @Repository
 public interface PriceRepository extends CrudRepository<Price, Long> {
+
+//    @RestResource(exported = false)
     List<Price> findByVehicleId(@Param("vehicleId") Long vehicleId);
 
 }
