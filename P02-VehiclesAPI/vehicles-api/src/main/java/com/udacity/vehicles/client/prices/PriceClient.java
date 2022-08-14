@@ -5,6 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import com.jayway.jsonpath.*;
+
 /**
  * Implements a class to interface with the Pricing Client for price data.
  *
@@ -34,22 +39,28 @@ public class PriceClient {
      *   error message that the vehicle ID is invalid, or note that the
      *   service is down.
      */
-    public String getPrice(Long vehicleId) {
+    public Price getPrice(Long vehicleId) {
+        Price price = new Price();
         try {
-            Price price = client
+            String response = client
                     .get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("services/price/")
+                            .path("prices/search/findByVehicleId")
                             .queryParam("vehicleId", vehicleId)
                             .build()
                     )
-                    .retrieve().bodyToMono(Price.class).block();
+                    .retrieve().bodyToMono(String.class).block();
 
-            return String.format("%s %s", price.getCurrency(), price.getPrice());
+            DocumentContext context = JsonPath.parse(response);
+            List<Map> prices = context.read("$._embedded.prices[*]");
 
+            price.setPrice(BigDecimal.valueOf(Double.parseDouble(prices.get(0).get("price").toString())));
+            price.setCurrency(prices.get(0).get("currency").toString());
+
+            return price;
         } catch (Exception e) {
             log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
         }
-        return "(consult price)";
+        return price;
     }
 }

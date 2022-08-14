@@ -51,8 +51,8 @@ public class VehiclesApiApplication {
             repository.save(new Manufacturer(103, "BMW"));
             repository.save(new Manufacturer(104, "Dodge"));
 
-            carRepository.save(new Car(1L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("wood","crow",manufacturer)));
-            carRepository.save(new Car(2L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("steel","house",manufacturer)));
+//            carRepository.save(new Car(1L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("wood","crow",manufacturer)));
+//            carRepository.save(new Car(22L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("steel","house",manufacturer)));
         };
     }
 

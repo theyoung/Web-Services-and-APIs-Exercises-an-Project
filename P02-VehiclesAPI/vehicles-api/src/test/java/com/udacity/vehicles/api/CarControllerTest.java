@@ -1,12 +1,10 @@
 package com.udacity.vehicles.api;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_UTF8;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,17 +17,22 @@ import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.Details;
 import com.udacity.vehicles.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles.service.CarService;
+
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
+import org.mockito.internal.matchers.GreaterThan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,6 +44,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CarControllerTest {
 
     @Autowired
@@ -49,26 +53,19 @@ public class CarControllerTest {
     @Autowired
     private JacksonTester<Car> json;
 
-    @MockBean
+    @Autowired
     private CarService carService;
-
-    @MockBean
-    private PriceClient priceClient;
-
-    @MockBean
-    private MapsClient mapsClient;
 
     /**
      * Creates pre-requisites for testing, such as an example car.
      */
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         Car car = getCar();
-        car.setId(1L);
-        given(carService.save(any())).willReturn(car);
-        given(carService.findById(any())).willReturn(car);
-        given(carService.list()).willReturn(Collections.singletonList(car));
+        carService.save(car);
     }
+
+
 
     /**
      * Tests for successful creation of new car in the system
@@ -77,12 +74,32 @@ public class CarControllerTest {
     @Test
     public void createCar() throws Exception {
         Car car = getCar();
+        car.setPrice("1235");
+
         mvc.perform(
                 post(new URI("/cars"))
                         .content(json.write(car).getJson())
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.price", is("1235")))
+                .andExpect(jsonPath("$.id", is(greaterThan(1))));
+    }
+
+    @Test
+    public void putCar() throws Exception {
+        Car car = getCar();
+        car.setId(1l);
+        car.setCondition(Condition.NEW);
+
+        mvc.perform(
+                put(new URI("/cars/1"))
+                        .content(json.write(car).getJson())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.condition", is("NEW")))
+                .andExpect(jsonPath("$.id", is(1)));
     }
 
     /**
@@ -96,6 +113,11 @@ public class CarControllerTest {
          *   the whole list of vehicles. This should utilize the car from `getCar()`
          *   below (the vehicle will be the first in the list).
          */
+        mvc.perform(get(new URI("/cars")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(HAL_JSON_UTF8))
+                .andExpect(jsonPath("$._embedded.carList").isArray())
+                .andExpect(jsonPath("$._embedded.carList", hasSize(greaterThan(1))));
 
     }
 
@@ -109,6 +131,10 @@ public class CarControllerTest {
          * TODO: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
+        mvc.perform(get(new URI("/cars/1")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(HAL_JSON_UTF8))
+                .andExpect(jsonPath("$.id", is(1)));
     }
 
     /**
@@ -122,6 +148,11 @@ public class CarControllerTest {
          *   when the `delete` method is called from the Car Controller. This
          *   should utilize the car from `getCar()` below.
          */
+        mvc.perform(delete(new URI("/cars/1")))
+                .andExpect(status().is2xxSuccessful());
+
+        mvc.perform(get(new URI("/cars/1")))
+                .andExpect(status().isNoContent());
     }
 
     /**
