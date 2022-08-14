@@ -19,6 +19,11 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.reactive.function.client.WebClient;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,6 +42,7 @@ import java.util.List;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableEurekaClient
+@EnableSwagger2
 public class VehiclesApiApplication {
 
     @Autowired(required = false)
@@ -53,14 +59,14 @@ public class VehiclesApiApplication {
     @Bean
     CommandLineRunner initDatabase(ManufacturerRepository repository, CarRepository carRepository) {
         return args -> {
-            Manufacturer manufacturer = new Manufacturer(100, "Audi");
-            repository.save(manufacturer);
-            repository.save(new Manufacturer(101, "Chevrolet"));
-            repository.save(new Manufacturer(102, "Ford"));
-            repository.save(new Manufacturer(103, "BMW"));
-            repository.save(new Manufacturer(104, "Dodge"));
+//            Manufacturer manufacturer = new Manufacturer(100, "Audi");
+//            repository.save(manufacturer);
+//            repository.save(new Manufacturer(101, "Chevrolet"));
+//            repository.save(new Manufacturer(102, "Ford"));
+//            repository.save(new Manufacturer(103, "BMW"));
+//            repository.save(new Manufacturer(104, "Dodge"));
 
-            carRepository.save(new Car(1L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("wood","crow",manufacturer)));
+//            carRepository.save(new Car(1L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("wood","crow",manufacturer)));
 //            carRepository.save(new Car(22L, LocalDateTime.now(), LocalDateTime.now(), Condition.USED, new Details("steel","house",manufacturer)));
         };
     }
@@ -101,6 +107,15 @@ public class VehiclesApiApplication {
             }
         }
         return WebClient.create(endpoint);
+    }
+
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
     }
 
 }
